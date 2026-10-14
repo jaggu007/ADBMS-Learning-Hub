@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 3 — MongoDB Advanced Topics | ADBMS Learning Hub</title>
+<style>
+:root{--bg:#f5f7fb;--surface:#fff;--surface2:#eef3fb;--text:#18243a;--muted:#64748b;--border:#dfe6f0;--brand:#3157d5;--shadow:0 12px 32px rgba(20,35,70,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px clamp(18px,5vw,64px);border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em}.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:var(--brand);color:white;font-weight:900}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:700}.wrap{width:min(1120px,92%);margin:auto}
+.hero{margin-top:34px;padding:clamp(25px,5vw,48px);border-radius:24px;color:white;background:linear-gradient(135deg,#2448bd,#6b82ec);box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"DB";position:absolute;right:16px;bottom:-70px;font-size:clamp(100px,18vw,190px);font-weight:900;opacity:.09;letter-spacing:-.1em}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;opacity:.85}h1{font-size:clamp(35px,5vw,56px);line-height:1.08;letter-spacing:-.05em;margin:12px 0}.hero p{max-width:700px;color:#e1e7ff;margin:0;font-size:16px}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.meta span{border:1px solid #ffffff50;background:#ffffff16;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:750}
+section{padding:32px 0}.heading{margin-bottom:18px}.heading h2{font-size:27px;letter-spacing:-.04em;margin:4px 0}.heading p{color:var(--muted);margin:0;font-size:14px}
+.search{margin-bottom:18px}.search input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font:inherit;outline:none}.search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px #3157d51a}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{display:flex;flex-direction:column;min-height:205px;padding:19px;background:var(--surface);border:1px solid var(--border);border-radius:17px;box-shadow:0 4px 15px rgba(20,35,70,.025);transition:transform .18s,box-shadow .18s}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}.top{display:flex;justify-content:space-between;align-items:center;gap:8px}.ico{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--surface2);font-size:21px}.pill{font-size:11px;padding:5px 9px;border-radius:999px;background:var(--surface2);color:var(--muted);font-weight:750;white-space:nowrap}.card h3{margin:15px 0 6px;font-size:17px;line-height:1.35;letter-spacing:-.02em}.card p{margin:0;color:var(--muted);font-size:13px;flex:1}.foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}.foot strong{color:var(--brand)}.empty{display:none;grid-column:1/-1;padding:24px;border:1px dashed var(--border);border-radius:14px;color:var(--muted);text-align:center}
+footer{border-top:1px solid var(--border);padding:24px 0 32px;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.hero{margin-top:20px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">DB</div><div>ADBMS Learning Hub<small>Student resource portal</small></div></div><nav><a href="#topics">Unit 3 Topics ↓</a></nav></header>
+<main>
+<div class="hero wrap"><div class="eyebrow">Advanced Database Management Systems</div><h1>Unit 3<br>MongoDB Advanced Topics</h1><p>Explore aggregation, advanced queries, replication, sharding, transactions, performance, security, and application integration through this topic-wise learning guide.</p><div class="meta"><span>20 Topics</span><span>Notes & Revision</span><span>Searchable Topic List</span></div></div>
+<section class="wrap" id="topics"><div class="heading"><div class="eyebrow" style="color:var(--brand)">Course materials</div><h2>Unit 3 — Complete Topic List</h2><p>Use the search box to quickly find a topic.</p></div>
+<div class="search"><input id="searchInput" type="search" placeholder="Search topics, e.g. replication, transactions..." aria-label="Search topics"></div>
+<div class="grid" id="topicGrid">
+<a href="IAF.html" class="card-link">
+  <article class="card" data-search="introduction to aggregation framework understand how mongodb processes documents to calculate and summarize results. aggregation">
+    <div class="top">
+      <div class="ico">▤</div>
+      <span class="pill">TOPIC 01</span>
+    </div>
+    <h3>Introduction to Aggregation Framework</h3>
+    <p>Understand how MongoDB processes documents to calculate and summarize results.</p>
+    <div class="foot">
+      <span>Aggregation</span>
+      <strong>01 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="API.html" class="card-link">
+  <article class="card" data-search="aggregation pipeline and its working follow documents through a sequence of transformation and processing stages. aggregation">
+    <div class="top">
+      <div class="ico">⇢</div>
+      <span class="pill">TOPIC 02</span>
+    </div>
+    <h3>Aggregation Pipeline and Its Working</h3>
+    <p>Follow documents through a sequence of transformation and processing stages.</p>
+    <div class="foot">
+      <span>Aggregation</span>
+      <strong>02 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="APS.html" class="card-link">
+  <article class="card" data-search="aggregation pipeline stages explore stages such as $match, $group, $project, and $sort. aggregation">
+    <div class="top">
+      <div class="ico">▦</div>
+      <span class="pill">TOPIC 03</span>
+    </div>
+    <h3>Aggregation Pipeline Stages</h3>
+    <p>Explore stages such as $match, $group, $project, and $sort.</p>
+    <div class="foot">
+      <span>Aggregation</span>
+      <strong>03 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="AQT.html" class="card-link">
+  <article class="card" data-search="advanced querying techniques use query operators, projections, array queries, and embedded-document filters. querying">
+    <div class="top">
+      <div class="ico">⌕</div>
+      <span class="pill">TOPIC 04</span>
+    </div>
+    <h3>Advanced Querying Techniques</h3>
+    <p>Use query operators, projections, array queries, and embedded-document filters.</p>
+    <div class="foot">
+      <span>Querying</span>
+      <strong>04 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="TSB.html" class="card-link">
+  <article class="card" data-search="text search basics learn text indexes and basic full-text search operations. search">
+    <div class="top">
+      <div class="ico">⌕</div>
+      <span class="pill">TOPIC 05</span>
+    </div>
+    <h3>Text Search Basics</h3>
+    <p>Learn text indexes and basic full-text search operations.</p>
+    <div class="foot">
+      <span>Search</span>
+      <strong>05 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="RCM.html" class="card-link">
+  <article class="card" data-search="replication concepts in mongodb understand data redundancy, availability, replication, and failover. replication">
+    <div class="top">
+      <div class="ico">⟳</div>
+      <span class="pill">TOPIC 06</span>
+    </div>
+    <h3>Replication Concepts in MongoDB</h3>
+    <p>Understand data redundancy, availability, replication, and failover.</p>
+    <div class="foot">
+      <span>Replication</span>
+      <strong>06 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="RSA.html" class="card-link">
+  <article class="card" data-search="replica sets and their architecture explore replica set members, primary elections, heartbeats, and synchronization. replication">
+    <div class="top">
+      <div class="ico">◈</div>
+      <span class="pill">TOPIC 07</span>
+    </div>
+    <h3>Replica Sets and Their Architecture</h3>
+    <p>Explore replica set members, primary elections, heartbeats, and synchronization.</p>
+    <div class="foot">
+      <span>Replication</span>
+      <strong>07 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="SFD.html" class="card-link">
+  <article class="card" data-search="sharding fundamentals study horizontal scaling, shards, config servers, mongos, and shard keys. scalability">
+    <div class="top">
+      <div class="ico">▦</div>
+      <span class="pill">TOPIC 08</span>
+    </div>
+    <h3>Sharding Fundamentals</h3>
+    <p>Study horizontal scaling, shards, config servers, mongos, and shard keys.</p>
+    <div class="foot">
+      <span>Scalability</span>
+      <strong>08 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="TIOM.html" class="card-link">
+  <article class="card" data-search="transactions in mongodb learn transaction basics, acid properties, commit, abort, and multi-document operations. consistency">
+    <div class="top">
+      <div class="ico">⟳</div>
+      <span class="pill">TOPIC 09</span>
+    </div>
+    <h3>Transactions in MongoDB</h3>
+    <p>Learn transaction basics, ACID properties, commit, abort, and multi-document operations.</p>
+    <div class="foot">
+      <span>Consistency</span>
+      <strong>09 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="POIM.html" class="card-link">
+  <article class="card" data-search="performance optimization in mongodb improve query efficiency with suitable indexes, schema design, and query patterns. performance">
+    <div class="top">
+      <div class="ico">↗</div>
+      <span class="pill">TOPIC 10</span>
+    </div>
+    <h3>Performance Optimization in MongoDB</h3>
+    <p>Improve query efficiency with suitable indexes, schema design, and query patterns.</p>
+    <div class="foot">
+      <span>Performance</span>
+      <strong>10 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="QPPA.html" class="card-link">
+  <article class="card" data-search="query profiling and performance analysis use explain plans and profiling data to investigate slow queries. performance">
+    <div class="top">
+      <div class="ico">⌁</div>
+      <span class="pill">TOPIC 11</span>
+    </div>
+    <h3>Query Profiling and Performance Analysis</h3>
+    <p>Use explain plans and profiling data to investigate slow queries.</p>
+    <div class="foot">
+      <span>Performance</span>
+      <strong>11 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="BCIM.html" class="card-link">
+  <article class="card" data-search="backup concepts in mongodb review backup strategies, data protection, and backup planning. backup & recovery">
+    <div class="top">
+      <div class="ico">▣</div>
+      <span class="pill">TOPIC 12</span>
+    </div>
+    <h3>Backup Concepts in MongoDB</h3>
+    <p>Review backup strategies, data protection, and backup planning.</p>
+    <div class="foot">
+      <span>Backup & recovery</span>
+      <strong>12 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="RAC.html" class="card-link">
+  <article class="card" data-search="restore and recovery concepts understand restore workflows and recovery planning after data loss. backup & recovery">
+    <div class="top">
+      <div class="ico">↶</div>
+      <span class="pill">TOPIC 13</span>
+    </div>
+    <h3>Restore and Recovery Concepts</h3>
+    <p>Understand restore workflows and recovery planning after data loss.</p>
+    <div class="foot">
+      <span>Backup & recovery</span>
+      <strong>13 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="SBIM.html" class="card-link">
+  <article class="card" data-search="security basics in mongodb review secure configuration, network protection, and security best practices. security">
+    <div class="top">
+      <div class="ico">◇</div>
+      <span class="pill">TOPIC 14</span>
+    </div>
+    <h3>Security Basics in MongoDB</h3>
+    <p>Review secure configuration, network protection, and security best practices.</p>
+    <div class="foot">
+      <span>Security</span>
+      <strong>14 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="AUTH.html" class="card-link">
+  <article class="card" data-search="authentication in mongodb learn how mongodb verifies users and supports authentication mechanisms. security">
+    <div class="top">
+      <div class="ico">♙</div>
+      <span class="pill">TOPIC 15</span>
+    </div>
+    <h3>Authentication in MongoDB</h3>
+    <p>Learn how MongoDB verifies users and supports authentication mechanisms.</p>
+    <div class="foot">
+      <span>Security</span>
+      <strong>15 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="AZ.html" class="card-link">
+  <article class="card" data-search="authorization and role-based access control understand roles, privileges, permissions, and least privilege. security">
+    <div class="top">
+      <div class="ico">✓</div>
+      <span class="pill">TOPIC 16</span>
+    </div>
+    <h3>Authorization and Role-Based Access Control</h3>
+    <p>Understand roles, privileges, permissions, and least privilege.</p>
+    <div class="foot">
+      <span>Security</span>
+      <strong>16 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="MON.html" class="card-link">
+  <article class="card" data-search="mongodb monitoring tools overview explore monitoring metrics, logs, alerts, and database health indicators. operations">
+    <div class="top">
+      <div class="ico">◷</div>
+      <span class="pill">TOPIC 17</span>
+    </div>
+    <h3>MongoDB Monitoring Tools Overview</h3>
+    <p>Explore monitoring metrics, logs, alerts, and database health indicators.</p>
+    <div class="foot">
+      <span>Operations</span>
+      <strong>17 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="DEPLOY.html" class="card-link">
+  <article class="card" data-search="deployment considerations plan environment configuration, availability, scaling, and production readiness. deployment">
+    <div class="top">
+      <div class="ico">⇧</div>
+      <span class="pill">TOPIC 18</span>
+    </div>
+    <h3>Deployment Considerations</h3>
+    <p>Plan environment configuration, availability, scaling, and production readiness.</p>
+    <div class="foot">
+      <span>Deployment</span>
+      <strong>18 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="INTEGRATION.html" class="card-link">
+  <article class="card" data-search="mongodb integration with applications introduce application drivers and connecting mongodb to application code. integration">
+    <div class="top">
+      <div class="ico">⌘</div>
+      <span class="pill">TOPIC 19</span>
+    </div>
+    <h3>MongoDB Integration with Applications</h3>
+    <p>Introduce application drivers and connecting MongoDB to application code.</p>
+    <div class="foot">
+      <span>Integration</span>
+      <strong>19 / 20</strong>
+    </div>
+  </article>
+</a>
+<a href="MODERN.html" class="card-link">
+  <article class="card" data-search="mongodb integration with modern data-driven systems explore how mongodb supports modern applications and data-driven solutions. modern systems">
+    <div class="top">
+      <div class="ico">◉</div>
+      <span class="pill">TOPIC 20</span>
+    </div>
+    <h3>MongoDB Integration with Modern Data-Driven Systems</h3>
+    <p>Explore how MongoDB supports modern applications and data-driven solutions.</p>
+    <div class="foot">
+      <span>Modern systems</span>
+      <strong>20 / 20</strong>
+    </div>
+  </article>
+</a>
+<div class="empty" id="emptyState">No matching topics found. Try another keyword.</div>
+</div></section></main>
+<footer><div class="wrap footer-inner"><span>© <span id="year"></span> ADBMS Learning Hub</span><span>Unit 3 · MongoDB Advanced Topics</span></div></footer>
+<script>
+const input=document.getElementById('searchInput');
+const cards=[...document.querySelectorAll('.card')];
+const empty=document.getElementById('emptyState');
+function filterTopics(){const q=input.value.trim().toLowerCase();let count=0;cards.forEach(card=>{const show=(card.dataset.search+' '+card.innerText).toLowerCase().includes(q);card.style.display=show?'flex':'none';if(show)count++;});empty.style.display=count?'none':'block';}
+input.addEventListener('input',filterTopics);
+document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>

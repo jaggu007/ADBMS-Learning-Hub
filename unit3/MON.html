@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MongoDB Monitoring Tools Overview | ADBMS Learning Hub</title>
+<style>
+:root{--bg:#f5f7fb;--surface:#fff;--surface2:#eef3fb;--text:#18243a;--muted:#64748b;--border:#dfe6f0;--brand:#3157d5;--shadow:0 12px 32px rgba(20,35,70,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px clamp(18px,5vw,64px);border-bottom:1px solid var(--border);background:var(--surface)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em}.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:var(--brand);color:white;font-weight:900}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:700}.wrap{width:min(1120px,92%);margin:auto}
+.hero{margin-top:34px;padding:clamp(25px,5vw,48px);border-radius:24px;color:white;background:linear-gradient(135deg,#2448bd,#6b82ec);box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"DB";position:absolute;right:16px;bottom:-70px;font-size:clamp(100px,18vw,190px);font-weight:900;opacity:.09;letter-spacing:-.1em}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;opacity:.85}h1{font-size:clamp(35px,5vw,56px);line-height:1.08;letter-spacing:-.05em;margin:12px 0}.hero p{max-width:700px;color:#e1e7ff;margin:0;font-size:16px}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.meta span{border:1px solid #ffffff50;background:#ffffff16;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:750}
+section{padding:32px 0}.content{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.panel{padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 8px 20px rgba(20,35,70,.04)}.panel h2{font-size:27px;letter-spacing:-.04em;margin:0 0 12px}.panel h3{font-size:20px;letter-spacing:-.03em;margin:18px 0 10px}.panel p, .panel li{color:var(--muted);font-size:15px}.panel ul{padding-left:18px;margin:0}.panel pre{margin:0;background:var(--surface2);padding:18px;border-radius:12px;border:1px solid var(--border);overflow:auto;color:var(--text);font-size:13px;line-height:1.6}.info-box{background:linear-gradient(135deg,#f4f7ff,#edf4ff);border:1px solid #dfe9ff;border-radius:16px;padding:18px}.cta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--border);margin-top:22px}.cta a{color:var(--brand);text-decoration:none;font-weight:800}footer{border-top:1px solid var(--border);padding:24px 0 32px;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:760px){.content{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">DB</div><div>ADBMS Learning Hub<small>Student resource portal</small></div></div>
+  <nav>
+    <a href="Unit_3_MongoDB_Topics.html">Unit 3 List</a>
+    <a href="IAF.html">Topic 1</a>
+    <a href="AZ.html">Previous</a>
+    <a href="DEPLOY.html">Next</a>
+  </nav>
+</header>
+<main>
+  <div class="hero wrap">
+    <div class="eyebrow">Advanced Database Management Systems</div>
+    <h1>Topic 17<br>MongoDB Monitoring Tools Overview</h1>
+    <p>Monitoring tools help track health, resource use, slow queries, and operational issues in real time.</p>
+    <div class="meta"><span>Operations</span><span>Unit 3</span><span>MongoDB</span></div>
+  </div>
+
+  <section class="wrap content">
+    <div class="panel">
+      <div class="eyebrow" style="color:var(--brand)">Concept overview</div>
+      <h2>MongoDB Monitoring Tools Overview</h2>
+      <p>Healthy database operations depend on tracking CPU, memory, I/O, replication lag, and slow queries. This helps admins react before failures affect users.</p>
+      <h3>Key points</h3>
+      <ul>
+        <li>Monitoring tracks server and database metrics.</li><li>Alerts catch unusual patterns early.</li><li>Slow logs highlight expensive operations.</li><li>Operational visibility supports reliability.</li>
+      </ul>
+    </div>
+
+    <aside class="panel info-box">
+      <div class="eyebrow" style="color:var(--brand)">Quick revision</div>
+      <h3>Remember this</h3>
+      <p>Monitoring tools help track health, resource use, slow queries, and operational issues in real time.</p>
+      <p><strong>Focus:</strong> Understand the purpose, components, and application of this concept in MongoDB systems and database design.</p>
+    </aside>
+  </section>
+
+  <section class="wrap">
+    <div class="panel">
+      <div class="eyebrow" style="color:var(--brand)">Example</div>
+      <h3>MongoDB example</h3>
+      <pre>db.serverStatus()
+db.currentOp()</pre>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="panel">
+      <div class="eyebrow" style="color:var(--brand)">Exam-oriented summary</div>
+      <p>In practical exams, define the concept clearly, then support it with a short real query and a single sentence explaining why it matters in database design or optimization.</p>
+      <div class="cta">
+        <a href="AZ.html">Previous</a>
+        <a href="DEPLOY.html">Next</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap footer-inner"><span>© <span id="year"></span> ADBMS Learning Hub</span><span>Unit 3 · MongoDB Advanced Topics</span></div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
