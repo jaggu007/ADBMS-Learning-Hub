@@ -66,6 +66,612 @@ section{padding:32px 0}.content{display:grid;grid-template-columns:1.5fr 1fr;gap
 
   <section class="wrap">
     <div class="panel">
+      <h1 id="advanced-querying-techniques-in-mongodb">Advanced Querying Techniques in MongoDB </h1>
+<h2 id="1-introduction">1. Introduction </h2>
+<p>Advanced querying techniques in MongoDB help retrieve specific documents by applying multiple conditions and using operators for comparison, logical combinations, nested documents, arrays, pattern matching, field existence, data types, and more.</p>
+<p>MongoDB commonly uses the <code>find()</code> method to filter documents according to the required conditions. Queries can also combine filtering with projection, sorting, and limiting to return only the necessary information in a useful order.</p>
+<p>This guide uses a sample <code>students</code> collection and then explains the main techniques with examples and practice questions.</p>
+<hr>
+<h2 id="2-create-and-populate-the-sample-collection">2. Create and Populate the Sample Collection </h2>
+<p>Select the database:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>use <span class="token constant">KIET</span>
+</code></pre><p>Insert sample student records:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">insertMany</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">rollNo</span><span class="token operator">:</span> <span class="token number">101</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Amit"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">85</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Java"</span><span class="token punctuation">,</span> <span class="token string">"MongoDB"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Delhi"</span><span class="token punctuation">,</span> <span class="token literal-property property">pin</span><span class="token operator">:</span> <span class="token number">110001</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">rollNo</span><span class="token operator">:</span> <span class="token number">102</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Neha"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">21</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"IT"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">92</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Python"</span><span class="token punctuation">,</span> <span class="token string">"AI"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Noida"</span><span class="token punctuation">,</span> <span class="token literal-property property">pin</span><span class="token operator">:</span> <span class="token number">201301</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">rollNo</span><span class="token operator">:</span> <span class="token number">103</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Rahul"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">19</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">67</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Java"</span><span class="token punctuation">,</span> <span class="token string">"Python"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Ghaziabad"</span><span class="token punctuation">,</span> <span class="token literal-property property">pin</span><span class="token operator">:</span> <span class="token number">201010</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">rollNo</span><span class="token operator">:</span> <span class="token number">104</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Priya"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">22</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"IT"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">78</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"MongoDB"</span><span class="token punctuation">,</span> <span class="token string">"AI"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Delhi"</span><span class="token punctuation">,</span> <span class="token literal-property property">pin</span><span class="token operator">:</span> <span class="token number">110001</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">rollNo</span><span class="token operator">:</span> <span class="token number">105</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Karan"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">95</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Java"</span><span class="token punctuation">,</span> <span class="token string">"Python"</span><span class="token punctuation">,</span> <span class="token string">"AI"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Noida"</span><span class="token punctuation">,</span> <span class="token literal-property property">pin</span><span class="token operator">:</span> <span class="token number">201301</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span>
+</code></pre><p>To display the inserted documents:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre><blockquote>
+<p><strong>Note:</strong> If you run <code>insertMany()</code> repeatedly in the same database, MongoDB may report duplicate <code>_id</code> values only if you explicitly reuse them. Otherwise, it will insert another set of documents. Use a fresh collection or clear the sample data before rerunning if you want exactly five records.</p>
+</blockquote>
+<hr>
+<h2 id="3-comparison-operators">3. Comparison Operators </h2>
+<p>Comparison operators compare a field's value with a specified value.</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$gt</code></td>
+<td>Greater than</td>
+<td><code>{ marks: { $gt: 80 } }</code></td>
+</tr>
+<tr>
+<td><code>$gte</code></td>
+<td>Greater than or equal to</td>
+<td><code>{ marks: { $gte: 80 } }</code></td>
+</tr>
+<tr>
+<td><code>$lt</code></td>
+<td>Less than</td>
+<td><code>{ age: { $lt: 21 } }</code></td>
+</tr>
+<tr>
+<td><code>$lte</code></td>
+<td>Less than or equal to</td>
+<td><code>{ marks: { $lte: 80 } }</code></td>
+</tr>
+<tr>
+<td><code>$ne</code></td>
+<td>Not equal to</td>
+<td><code>{ branch: { $ne: "CSE" } }</code></td>
+</tr>
+<tr>
+<td><code>$in</code></td>
+<td>Matches a value in the specified list</td>
+<td><code>{ branch: { $in: ["CSE", "IT"] } }</code></td>
+</tr>
+<tr>
+<td><code>$nin</code></td>
+<td>Matches values not in the specified list</td>
+<td><code>{ age: { $nin: [19, 22] } }</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-1-find-students-scoring-more-than-80">Example 1: Find students scoring more than 80 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token number">80</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This returns students whose <code>marks</code> value is strictly greater than 80.</p>
+<h3 id="example-2-find-students-scoring-from-70-to-90-inclusive">Example 2: Find students scoring from 70 to 90, inclusive </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gte</span><span class="token operator">:</span> <span class="token number">70</span><span class="token punctuation">,</span> <span class="token literal-property property">$lte</span><span class="token operator">:</span> <span class="token number">90</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>Both conditions apply to the <code>marks</code> field, so a matching value must be at least 70 and at most 90.</p>
+<h3 id="example-3-find-students-who-are-not-in-the-cse-branch">Example 3: Find students who are not in the CSE branch </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$ne</span><span class="token operator">:</span> <span class="token string">"CSE"</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This matches documents where <code>branch</code> is not <code>"CSE"</code>. Be aware that <code>$ne</code> can also match documents where the field is missing.</p>
+<hr>
+<h2 id="4-logical-operators">4. Logical Operators </h2>
+<p>Logical operators combine conditions in a query.</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$and</code></td>
+<td>All specified conditions must be true</td>
+</tr>
+<tr>
+<td><code>$or</code></td>
+<td>At least one specified condition must be true</td>
+</tr>
+<tr>
+<td><code>$not</code></td>
+<td>Negates the condition for a field</td>
+</tr>
+<tr>
+<td><code>$nor</code></td>
+<td>None of the specified conditions may be true</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-1-find-cse-students-scoring-more-than-80">Example 1: Find CSE students scoring more than 80 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">$and</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token number">80</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>The branch must be CSE <strong>and</strong> the marks must be greater than 80.</p>
+<p>Because these conditions use different fields, the same query can be written more simply:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token number">80</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><h3 id="example-2-find-students-who-are-in-cse-or-scored-above-90">Example 2: Find students who are in CSE or scored above 90 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">$or</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token number">90</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>A student matches if either condition is true. A student satisfying both conditions is still returned once.</p>
+<h3 id="example-3-find-students-whose-marks-are-not-greater-than-80">Example 3: Find students whose marks are not greater than 80 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$not</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token number">80</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This negates the <code>marks &gt; 80</code> condition. For fields that may be missing or contain unexpected values, inspect the data carefully when interpreting negated queries.</p>
+<hr>
+<h2 id="5-querying-nested-documents">5. Querying Nested Documents </h2>
+<p>A nested document is an object stored inside another document. In the sample collection, <code>address</code> is a nested document containing <code>city</code> and <code>pin</code>.</p>
+<p>Example document:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Amit"</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Delhi"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">pin</span><span class="token operator">:</span> <span class="token number">110001</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><p>Use <strong>dot notation</strong> to query a field inside a nested document.</p>
+<h3 id="example-1-find-students-living-in-delhi">Example 1: Find students living in Delhi </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token string-property property">"address.city"</span><span class="token operator">:</span> <span class="token string">"Delhi"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><h3 id="example-2-find-students-with-pin-code-201301">Example 2: Find students with PIN code 201301 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token string-property property">"address.pin"</span><span class="token operator">:</span> <span class="token number">201301</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Important:</strong> Put quotation marks around dotted field names such as <code>"address.city"</code>.</p>
+<p>Dot notation lets you query one nested field without requiring the entire nested object to match exactly.</p>
+<hr>
+<h2 id="6-querying-arrays">6. Querying Arrays </h2>
+<p>MongoDB provides operators for finding documents based on the contents of array fields.</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$in</code></td>
+<td>Matches when an array contains at least one specified value</td>
+</tr>
+<tr>
+<td><code>$all</code></td>
+<td>Requires the array to contain all specified values</td>
+</tr>
+<tr>
+<td><code>$size</code></td>
+<td>Matches an array with an exact number of elements</td>
+</tr>
+<tr>
+<td><code>$elemMatch</code></td>
+<td>Requires at least one array element to satisfy all specified conditions</td>
+</tr>
+</tbody>
+</table>
+<p>The sample <code>skills</code> field is an array, for example:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code><span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Java"</span><span class="token punctuation">,</span> <span class="token string">"MongoDB"</span><span class="token punctuation">]</span>
+</code></pre><h3 id="example-1-find-students-who-know-java">Example 1: Find students who know Java </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token string">"Java"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>MongoDB can match an array field when one of its elements equals the specified value.</p>
+<h3 id="example-2-find-students-who-know-both-java-and-python">Example 2: Find students who know both Java and Python </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$all</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Java"</span><span class="token punctuation">,</span> <span class="token string">"Python"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>The array must contain both values; the values do not need to be adjacent.</p>
+<h3 id="example-3-find-students-who-have-exactly-two-skills">Example 3: Find students who have exactly two skills </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$size</span><span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><code>$size</code> matches arrays with exactly two elements. It does not support a range such as “at least two” directly.</p>
+<h3 id="example-4-find-students-whose-skills-include-ai-or-mongodb">Example 4: Find students whose skills include AI or MongoDB </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">{</span> $<span class="token keyword keyword-in">in</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"AI"</span><span class="token punctuation">,</span> <span class="token string">"MongoDB"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This matches arrays containing <strong>AI or MongoDB or both</strong>.</p>
+<h3 id="understanding-elemmatch">Understanding <code>$elemMatch</code> </h3>
+<p><code>$elemMatch</code> is particularly useful when an array contains objects or values that must satisfy multiple conditions together. For example, if a document has <code>scores: [65, 78, 92]</code>, the query below asks for an array element that is at least 70 and less than 90:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">scores</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$elemMatch</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gte</span><span class="token operator">:</span> <span class="token number">70</span><span class="token punctuation">,</span> <span class="token literal-property property">$lt</span><span class="token operator">:</span> <span class="token number">90</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This example requires a <code>scores</code> array in the documents. The original sample collection does not include that field.</p>
+<hr>
+<h2 id="7-regular-expressions-with-regex">7. Regular Expressions with <code>$regex</code> </h2>
+<p>Regular expressions let you search strings by pattern when you do not know the complete value. They are useful for matching a beginning, ending, substring, or alternative text.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern or option</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>^A</code></td>
+<td>Starts with uppercase A</td>
+<td><code>{ name: { $regex: "^A" } }</code></td>
+</tr>
+<tr>
+<td><code>a$</code></td>
+<td>Ends with lowercase a</td>
+<td><code>{ name: { $regex: "a$" } }</code></td>
+</tr>
+<tr>
+<td><code>ha</code></td>
+<td>Contains the substring <code>ha</code></td>
+<td><code>{ name: { $regex: "ha" } }</code></td>
+</tr>
+<tr>
+<td><code>$options: "i"</code></td>
+<td>Case-insensitive matching</td>
+<td><code>{ name: { $regex: "^a", $options: "i" } }</code></td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>Any single character</td>
+<td><code>"A.it"</code></td>
+</tr>
+<tr>
+<td><code>.*</code></td>
+<td>Any sequence of characters</td>
+<td><code>"A.*a"</code></td>
+</tr>
+<tr>
+<td><code>[AP]</code></td>
+<td>Either A or P at that position</td>
+<td><code>"^[AP]"</code></td>
+</tr>
+<tr>
+<td>`A</td>
+<td>B`</td>
+<td>A or B</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-find-names-beginning-with-a-ignoring-case">Example: Find names beginning with A, ignoring case </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"^a"</span><span class="token punctuation">,</span> <span class="token literal-property property">$options</span><span class="token operator">:</span> <span class="token string">"i"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><ul>
+<li><code>^</code> anchors the pattern at the beginning of the string.</li>
+<li><code>a</code> is the character to match.</li>
+<li><code>i</code> makes the match case-insensitive.</li>
+</ul>
+<h3 id="searching-for-a-literal-dot-in-an-email-address">Searching for a literal dot in an email address </h3>
+<p>A dot (<code>.</code>) normally means “any single character” in a regular expression. To match a literal period, escape it:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"@gmail\\.com$"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>The <code>\\.</code> in a JavaScript-style string pattern represents an escaped dot in the regular expression. The <code>$</code> anchors the match at the end of the string.</p>
+<hr>
+<h2 id="8-field-existence-and-data-types">8. Field Existence and Data Types </h2>
+<h3 id="exists"><code>$exists</code> </h3>
+<p><code>$exists</code> checks whether a field is present in a document.</p>
+<p>Find documents containing the <code>address</code> field:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$exists</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>Find documents where the <code>address</code> field is absent:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">address</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$exists</span><span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Important:</strong> <code>$exists: true</code> checks whether the field exists; it does not guarantee that the value is non-null.</p>
+<h3 id="type"><code>$type</code> </h3>
+<p><code>$type</code> checks the BSON data type of a field.</p>
+<p>Find documents where <code>marks</code> is stored as a number:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$type</span><span class="token operator">:</span> <span class="token string">"number"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This is useful when a collection contains data of inconsistent types. In the sample data, all <code>marks</code> values are numeric.</p>
+<hr>
+<h2 id="9-comparing-two-fields-with-expr">9. Comparing Two Fields with <code>$expr</code> </h2>
+<p><code>$expr</code> allows aggregation expressions to be used within a query filter. One use is comparing two field values in the same document.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">$expr</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"$marks"</span><span class="token punctuation">,</span> <span class="token string">"$age"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p>This finds documents where <code>marks</code> is greater than <code>age</code>.</p>
+<ul>
+<li><code>"$marks"</code> refers to the value of the <code>marks</code> field.</li>
+<li><code>"$age"</code> refers to the value of the <code>age</code> field.</li>
+<li><code>$gt</code> compares the two values.</li>
+</ul>
+<p>Unlike <code>{ marks: { $gt: 80 } }</code>, this query compares <code>marks</code> against another field rather than against a fixed number.</p>
+<hr>
+<h2 id="10-combining-filtering-projection-sorting-and-limiting">10. Combining Filtering, Projection, Sorting, and Limiting </h2>
+<p>A query can combine several operations to retrieve only the required records.</p>
+<h3 id="scenario">Scenario </h3>
+<p>The college wants the <strong>two highest-scoring students from CSE</strong>, displaying only their names and marks.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">_id</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span>
+<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token method function property-access">sort</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token method function property-access">limit</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+</code></pre><h3 id="explanation">Explanation </h3>
+<ol>
+<li><strong>Filter:</strong> <code>{ branch: "CSE" }</code> selects CSE students.</li>
+<li><strong>Projection:</strong> <code>{ _id: 0, name: 1, marks: 1 }</code> displays only <code>name</code> and <code>marks</code>, while excluding <code>_id</code>.</li>
+<li><strong>Sort:</strong> <code>.sort({ marks: -1 })</code> sorts marks in descending order.</li>
+<li><strong>Limit:</strong> <code>.limit(2)</code> returns at most two documents.</li>
+</ol>
+<p>In a projection, <code>1</code> includes a field and <code>0</code> excludes it. The <code>_id</code> field is included by default, so it is explicitly excluded here.</p>
+<hr>
+<h2 id="11-advanced-operators-at-a-glance">11. Advanced Operators at a Glance </h2>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Example</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$expr</code></td>
+<td><code>{ $expr: { $gt: ["$marks", "$age"] } }</code></td>
+<td>Compare fields or use expressions</td>
+</tr>
+<tr>
+<td><code>$regex</code></td>
+<td><code>{ name: { $regex: "^A" } }</code></td>
+<td>Match a string pattern</td>
+</tr>
+<tr>
+<td><code>$all</code></td>
+<td><code>{ skills: { $all: ["Java", "AI"] } }</code></td>
+<td>Require all listed array values</td>
+</tr>
+<tr>
+<td><code>$elemMatch</code></td>
+<td><code>{ scores: { $elemMatch: { $gte: 70, $lt: 90 } } }</code></td>
+<td>Match an array element against multiple conditions</td>
+</tr>
+<tr>
+<td><code>$exists</code></td>
+<td><code>{ email: { $exists: true } }</code></td>
+<td>Check whether a field is present</td>
+</tr>
+<tr>
+<td><code>$type</code></td>
+<td><code>{ age: { $type: "number" } }</code></td>
+<td>Match a BSON data type</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="12-practice-questions-with-solutions">12. Practice Questions with Solutions </h2>
+<p>Use the original five-document <code>students</code> collection from Section 2.</p>
+<h3 id="question-1-find-students-older-than-20-years">Question 1: Find students older than 20 years </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gt</span><span class="token operator">:</span> <span class="token number">20</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Why?</strong> <code>$gt: 20</code> matches ages strictly greater than 20.</p>
+<h3 id="question-2-find-students-from-delhi-who-scored-at-least-80">Question 2: Find students from Delhi who scored at least 80 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token string-property property">"address.city"</span><span class="token operator">:</span> <span class="token string">"Delhi"</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$gte</span><span class="token operator">:</span> <span class="token number">80</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Why?</strong> Both conditions must be satisfied: the city must be Delhi and marks must be 80 or more.</p>
+<h3 id="question-3-find-students-who-know-both-java-and-mongodb">Question 3: Find students who know both Java and MongoDB </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">skills</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$all</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Java"</span><span class="token punctuation">,</span> <span class="token string">"MongoDB"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Why?</strong> <code>$all</code> requires both values to be present in the <code>skills</code> array.</p>
+<h3 id="question-4-find-students-from-it-or-students-who-scored-below-70">Question 4: Find students from IT or students who scored below 70 </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">$or</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"IT"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$lt</span><span class="token operator">:</span> <span class="token number">70</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Why?</strong> <code>$or</code> requires at least one condition to be true.</p>
+<h3 id="question-5-display-the-three-highest-scoring-students-showing-names-and-marks-only">Question 5: Display the three highest-scoring students, showing names and marks only </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span>
+  <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">_id</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span>
+<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token method function property-access">sort</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">marks</span><span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token method function property-access">limit</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Why?</strong> The empty filter <code>{}</code> selects all documents, projection selects the requested fields, descending sorting puts the highest marks first, and <code>limit(3)</code> returns at most three documents.</p>
+<hr>
+<h1 id="mongodb-regex-scenario-based-practice-questions">MongoDB <code>$regex</code>: Scenario-Based Practice Questions </h1>
+<h2 id="13-introduction-to-regex">13. Introduction to <code>$regex</code> </h2>
+<p>MongoDB's <code>$regex</code> operator searches strings using a regular-expression pattern. It is helpful when a user remembers only part of a name, needs to find emails from a domain, or wants to search without considering capitalization.</p>
+<p>The following section uses a separate set of sample student records.</p>
+<h3 id="sample-collection-for-regex-practice">Sample collection for regex practice </h3>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">insertMany</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Amit Sharma"</span><span class="token punctuation">,</span> <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token string">"amit@gmail.com"</span><span class="token punctuation">,</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Delhi"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Ananya Singh"</span><span class="token punctuation">,</span> <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token string">"ananya@kiet.edu"</span><span class="token punctuation">,</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"IT"</span><span class="token punctuation">,</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Noida"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Rahul Verma"</span><span class="token punctuation">,</span> <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token string">"rahul@gmail.com"</span><span class="token punctuation">,</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Ghaziabad"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Priya Gupta"</span><span class="token punctuation">,</span> <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token string">"priya@yahoo.com"</span><span class="token punctuation">,</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"ECE"</span><span class="token punctuation">,</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Delhi"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Aman Kumar"</span><span class="token punctuation">,</span> <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token string">"aman@kiet.edu"</span><span class="token punctuation">,</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"IT"</span><span class="token punctuation">,</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Meerut"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Neha Sharma"</span><span class="token punctuation">,</span> <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token string">"neha@gmail.com"</span><span class="token punctuation">,</span> <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span> <span class="token literal-property property">city</span><span class="token operator">:</span> <span class="token string">"Noida"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span>
+</code></pre><blockquote>
+<p><strong>Important:</strong> This regex dataset has a different structure from the first sample dataset. If you insert it into the same <code>students</code> collection without clearing or separating the data, the collection will contain both sets of documents. For predictable results, use a fresh collection or database for this practice set.</p>
+</blockquote>
+<h2 id="14-regex-symbols-quick-revision">14. Regex Symbols: Quick Revision </h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>^</code></td>
+<td>Beginning of a string</td>
+<td><code>^A</code> matches strings beginning with A</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>End of a string</td>
+<td><code>a$</code> matches strings ending with lowercase a</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>Any single character</td>
+<td><code>A.it</code></td>
+</tr>
+<tr>
+<td><code>.*</code></td>
+<td>Any sequence of characters</td>
+<td><code>A.*a</code></td>
+</tr>
+<tr>
+<td><code>i</code></td>
+<td>Case-insensitive option</td>
+<td><code>$options: "i"</code></td>
+</tr>
+<tr>
+<td><code>[abc]</code></td>
+<td>Any one character from the set</td>
+<td><code>[AP]</code> matches A or P</td>
+</tr>
+</tbody>
+</table>
+<h2 id="15-scenario-based-regex-questions-with-solutions">15. Scenario-Based Regex Questions with Solutions </h2>
+<h3 id="question-1-find-names-starting-with-a">Question 1: Find names starting with A </h3>
+<p><strong>Scenario:</strong> A college portal needs to display all students whose names begin with the letter A.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"^A"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches in the six-record regex dataset:</strong> Amit Sharma, Ananya Singh, Aman Kumar.</p>
+<p><code>^A</code> matches an uppercase A at the beginning of the name.</p>
+<h3 id="question-2-find-names-ending-with-lowercase-a">Question 2: Find names ending with lowercase a </h3>
+<p><strong>Scenario:</strong> The administration wants to find names whose complete string ends with the lowercase letter <code>a</code>.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"a$"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> Ananya Singh, Priya Gupta, Neha Sharma.</p>
+<p>The pattern is case-sensitive unless the <code>i</code> option is used.</p>
+<h3 id="question-3-search-names-containing-sharma">Question 3: Search names containing Sharma </h3>
+<p><strong>Scenario:</strong> A staff member remembers a student's surname but not their first name.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"Sharma"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> Amit Sharma, Neha Sharma.</p>
+<p>The pattern matches the substring <code>Sharma</code> anywhere in the name.</p>
+<h3 id="question-4-perform-a-case-insensitive-search-for-amit">Question 4: Perform a case-insensitive search for Amit </h3>
+<p><strong>Scenario:</strong> A search box should find <code>amit</code>, <code>Amit</code>, or <code>AMIT</code> without considering capitalization.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"^amit"</span><span class="token punctuation">,</span> <span class="token literal-property property">$options</span><span class="token operator">:</span> <span class="token string">"i"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected match:</strong> Amit Sharma.</p>
+<p><code>^</code> anchors the match at the beginning, while <code>$options: "i"</code> makes it case-insensitive.</p>
+<h3 id="question-5-find-gmail-users">Question 5: Find Gmail users </h3>
+<p><strong>Scenario:</strong> The college wants to retrieve students whose email addresses use Gmail.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"@gmail\\.com$"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> <a href="mailto:amit@gmail.com">amit@gmail.com</a>, <a href="mailto:rahul@gmail.com">rahul@gmail.com</a>, <a href="mailto:neha@gmail.com">neha@gmail.com</a>.</p>
+<p>The escaped dot matches a literal period, and <code>$</code> anchors the domain at the end of the email.</p>
+<h3 id="question-6-find-names-containing-kumar-or-gupta">Question 6: Find names containing Kumar or Gupta </h3>
+<p><strong>Scenario:</strong> A staff member wants to search for either of two surnames.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"Kumar|Gupta"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> Aman Kumar, Priya Gupta.</p>
+<p>The <code>|</code> symbol means OR between alternatives.</p>
+<h3 id="question-7-find-names-starting-with-a-or-p">Question 7: Find names starting with A or P </h3>
+<p><strong>Scenario:</strong> A report should include students whose names begin with either A or P.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"^[AP]"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> Amit Sharma, Ananya Singh, Priya Gupta, Aman Kumar.</p>
+<p><code>^</code> anchors the match at the beginning, and <code>[AP]</code> matches either A or P.</p>
+<h3 id="question-8-search-for-names-containing-two-consecutive-vowels">Question 8: Search for names containing two consecutive vowels </h3>
+<p><strong>Scenario:</strong> The college is searching for names that contain two consecutive vowels, such as <code>ea</code> or <code>ia</code>.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"[aeiou]{2}"</span><span class="token punctuation">,</span> <span class="token literal-property property">$options</span><span class="token operator">:</span> <span class="token string">"i"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches in the sample dataset:</strong> Ananya Singh, Priya Gupta, Neha Sharma.</p>
+<p><code>[aeiou]{2}</code> matches two consecutive vowel characters, and the <code>i</code> option ignores case.</p>
+<h3 id="question-9-filter-by-branch-and-name-pattern">Question 9: Filter by branch and name pattern </h3>
+<p><strong>Scenario:</strong> Find CSE students whose names begin with R or N.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">branch</span><span class="token operator">:</span> <span class="token string">"CSE"</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"^[RN]"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> Rahul Verma, Neha Sharma.</p>
+<p>Both conditions must be true: the branch must be CSE and the name must begin with R or N.</p>
+<h3 id="question-10-find-emails-from-the-institutional-domain">Question 10: Find emails from the institutional domain </h3>
+<p><strong>Scenario:</strong> The IT department wants to find students whose email addresses use the <code>kiet.edu</code> domain.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code>db<span class="token punctuation">.</span><span class="token property-access">students</span><span class="token punctuation">.</span><span class="token method function property-access">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">email</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">$regex</span><span class="token operator">:</span> <span class="token string">"@kiet\\.edu$"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre><p><strong>Expected matches:</strong> <a href="mailto:ananya@kiet.edu">ananya@kiet.edu</a>, <a href="mailto:aman@kiet.edu">aman@kiet.edu</a>.</p>
+<p>The pattern matches the literal <code>@kiet.edu</code> suffix at the end of the email.</p>
+<hr>
+<h2 id="16-three-important-rules-to-remember">16. Three Important Rules to Remember </h2>
+<ol>
+<li><strong>Use anchors correctly.</strong> <code>^A</code> checks the beginning of a string; <code>a$</code> checks the end.</li>
+<li><strong>Use case-insensitive matching when needed.</strong> Add <code>$options: "i"</code> if uppercase and lowercase should be treated the same.</li>
+<li><strong>Escape special characters.</strong> In regex, <code>.</code> means any single character. Use <code>\\.</code> in the query string to match a literal period, as in an email domain.</li>
+</ol>
+<h2 id="17-suggested-learning-sequence">17. Suggested Learning Sequence </h2>
+<p>For a practical class, work through the topics in this order:</p>
+<ol>
+<li>Comparison operators (<code>$gt</code>, <code>$gte</code>, <code>$lt</code>, <code>$lte</code>, <code>$ne</code>, <code>$in</code>, <code>$nin</code>).</li>
+<li>Logical operators (<code>$and</code>, <code>$or</code>, <code>$not</code>, <code>$nor</code>).</li>
+<li>Nested document queries using dot notation.</li>
+<li>Array queries (<code>$in</code>, <code>$all</code>, <code>$size</code>, <code>$elemMatch</code>).</li>
+<li>Regular expressions (<code>$regex</code> and <code>$options</code>).</li>
+<li>Field checks (<code>$exists</code>, <code>$type</code>).</li>
+<li>Field comparisons with <code>$expr</code>.</li>
+<li>Combined queries using filtering, projection, sorting, and limiting.</li>
+</ol>
+<p>Once these <code>find()</code> techniques are clear, students will be better prepared to study MongoDB's Aggregation Framework for more involved data-processing tasks.</p>
+
+      </div>
+    </div>
+
+  <section class="wrap">
+    <div class="panel">
       <div class="eyebrow" style="color:var(--brand)">Exam-oriented summary</div>
       <p>In practical exams, define the concept clearly, then support it with a short real query and a single sentence explaining why it matters in database design or optimization.</p>
       <div class="cta">
