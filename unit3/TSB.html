@@ -15,6 +15,125 @@ nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}nav a{color:var(--mu
 section{padding:32px 0}.content{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.panel{padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 8px 20px rgba(20,35,70,.04)}.panel h2{font-size:27px;letter-spacing:-.04em;margin:0 0 12px}.panel h3{font-size:20px;letter-spacing:-.03em;margin:18px 0 10px}.panel p, .panel li{color:var(--muted);font-size:15px}.panel ul{padding-left:18px;margin:0}.panel pre{margin:0;background:var(--surface2);padding:18px;border-radius:12px;border:1px solid var(--border);overflow:auto;color:var(--text);font-size:13px;line-height:1.6}.info-box{background:linear-gradient(135deg,#f4f7ff,#edf4ff);border:1px solid #dfe9ff;border-radius:16px;padding:18px}.cta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--border);margin-top:22px}.cta a{color:var(--brand);text-decoration:none;font-weight:800}footer{border-top:1px solid var(--border);padding:24px 0 32px;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
 @media(max-width:760px){.content{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
 </style>
+<style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --accent: #2563eb;
+      --border: #dbe2ea;
+      --code-bg: #111827;
+      --code-text: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 28px 16px 48px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.65;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--card);
+      padding: clamp(20px, 4vw, 44px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 2.7rem); }
+    h2 {
+      margin-top: 2.2em;
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.55rem;
+    }
+    h3 { margin-top: 1.6em; font-size: 1.15rem; }
+    p { margin: 0.7em 0; }
+    .intro {
+      padding: 16px 18px;
+      background: #eff6ff;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+    }
+    .code-wrap {
+      position: relative;
+      margin: 12px 0 20px;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 18px;
+      margin: 0;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 10px;
+      font: 0.92rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    p code, li code, td code {
+      background: #eef2f7;
+      color: #172033;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.92em;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 1px solid #64748b;
+      background: #263244;
+      color: #fff;
+      border-radius: 6px;
+      padding: 5px 9px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .copy-btn:hover { background: #3b4b62; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 22px;
+      display: block;
+      overflow-x: auto;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    th { background: #f0f4f9; }
+    .note {
+      padding: 13px 16px;
+      background: #fff7ed;
+      border-left: 4px solid #f59e0b;
+      border-radius: 7px;
+      margin: 16px 0;
+    }
+    ul, ol { padding-left: 1.5rem; }
+    .footer {
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 36px;
+      padding-top: 16px;
+      font-size: 0.9rem;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      main { box-shadow: none; border: none; max-width: none; padding: 0; }
+      .copy-btn { display: none; }
+      pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    }
+  </style>
 </head>
 <body>
 <header>
@@ -59,6 +178,198 @@ section{padding:32px 0}.content{display:grid;grid-template-columns:1.5fr 1fr;gap
       <h3>MongoDB example</h3>
       <pre>db.articles.createIndex({ content: "text" });
 db.articles.find({ $text: { $search: "mongodb database" } })</pre>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="panel">
+      <main>
+  <h1>Text Search Basics in MongoDB</h1>
+
+  <h2>1. What is Text Search?</h2>
+  <p><strong>Text Search in MongoDB</strong> is a feature that allows us to search for specific words or phrases inside string fields of documents.</p>
+  <div class="intro">
+    <strong>Example:</strong> Suppose a college database contains student project descriptions. We want to find all projects containing the word <code>Artificial</code>. A text index lets us search for matching words without manually checking every document.
+  </div>
+  <p><strong>Real-life example:</strong> Searching for <code>machine learning</code> in a collection of project descriptions, similar to searching for keywords in a search engine.</p>
+
+  <h2>2. Sample Collection</h2>
+  <p>Let's create a collection named <code>projects</code> and insert four sample documents.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>use KIET
+
+db.projects.insertMany([
+  {
+    title: "AI Chatbot",
+    description: "An artificial intelligence chatbot"
+  },
+  {
+    title: "Disease Prediction",
+    description: "Machine learning for disease prediction"
+  },
+  {
+    title: "Smart Farming",
+    description: "Artificial intelligence in agriculture"
+  },
+  {
+    title: "Student Portal",
+    description: "A web application for student management"
+  }
+])</code></pre></div>
+
+  <h2>3. Why Do We Need a Text Index?</h2>
+  <p>MongoDB requires a <strong>text index</strong> to perform text searches using the <code>$text</code> operator.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.createIndex({
+  description: "text"
+})</code></pre></div>
+  <ul>
+    <li><code>createIndex()</code> creates an index.</li>
+    <li><code>description</code> specifies the field to search.</li>
+    <li><code>"text"</code> specifies the index type.</li>
+  </ul>
+  <p>Check the indexes created on the collection:</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.getIndexes()</code></pre></div>
+  <div class="note"><strong>Important:</strong> A collection can have only one text index, but that index can cover multiple fields.</div>
+
+  <h2>4. Basic Text Search Queries</h2>
+
+  <h3>Example 1: Search for a Single Word</h3>
+  <p>Find projects whose descriptions contain <code>artificial</code>.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find({
+  $text: {
+    $search: "artificial"
+  }
+})</code></pre></div>
+  <p><strong>Expected matching projects:</strong></p>
+  <table>
+    <thead><tr><th>Title</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td>AI Chatbot</td><td>Description contains “artificial”.</td></tr>
+      <tr><td>Smart Farming</td><td>Description contains “artificial”.</td></tr>
+    </tbody>
+  </table>
+  <p>MongoDB's default text search is generally case-insensitive for English text, so <code>Artificial</code> and <code>artificial</code> match equivalently.</p>
+
+  <h3>Example 2: Search for Multiple Words</h3>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find({
+  $text: {
+    $search: "machine learning"
+  }
+})</code></pre></div>
+  <p>By default, MongoDB searches for documents containing either the word <code>machine</code> or the word <code>learning</code>. It does not require both words to be present.</p>
+
+  <h3>Example 3: Search for an Exact Phrase</h3>
+  <p>Find descriptions containing the exact phrase <code>machine learning</code>.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find({
+  $text: {
+    $search: "\"machine learning\""
+  }
+})</code></pre></div>
+  <p>The escaped quotation marks tell MongoDB to search for the phrase rather than treating the words as separate search terms.</p>
+
+  <h3>Example 4: Exclude a Word</h3>
+  <p>Find projects containing <code>artificial</code> but not <code>agriculture</code>.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find({
+  $text: {
+    $search: "artificial -agriculture"
+  }
+})</code></pre></div>
+  <p>This excludes documents matching the negative search term.</p>
+
+  <h3>Example 5: Display Only Selected Fields</h3>
+  <p>Find matching projects and display only their titles.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find(
+  {
+    $text: {
+      $search: "artificial"
+    }
+  },
+  {
+    _id: 0,
+    title: 1
+  }
+)</code></pre></div>
+  <p>Expected output:</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>{ title: "AI Chatbot" }
+{ title: "Smart Farming" }</code></pre></div>
+
+  <h2>5. Search Across Multiple Fields</h2>
+  <p>To search both <code>title</code> and <code>description</code>, create a text index on both fields:</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.createIndex({
+  title: "text",
+  description: "text"
+})</code></pre></div>
+  <p>Then search both indexed fields:</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find({
+  $text: {
+    $search: "student"
+  }
+})</code></pre></div>
+  <div class="note"><strong>Note:</strong> If you already created the text index on <code>description</code>, drop it before creating the new index. The default index name is typically <code>description_text</code>.</div>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.dropIndex("description_text")</code></pre></div>
+
+  <h2>6. Text Search vs. Regex Search</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>Text Search</th><th>Regex Search</th></tr></thead>
+    <tbody>
+      <tr><td>Operator</td><td><code>$text</code></td><td><code>$regex</code></td></tr>
+      <tr><td>Requires text index</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Best for</td><td>Keyword-based searching</td><td>Pattern matching</td></tr>
+      <tr><td>Word matching</td><td>Searches indexed terms</td><td>Matches character patterns</td></tr>
+      <tr><td>Case-insensitive search</td><td>Default behavior for English text</td><td>Use the <code>i</code> option</td></tr>
+      <tr><td>Example</td><td>Search for <code>artificial</code></td><td>Search for titles starting with <code>AI</code></td></tr>
+    </tbody>
+  </table>
+  <p>Regex example: find titles beginning with <code>AI</code>, ignoring case.</p>
+  <div class="code-wrap"><button class="copy-btn" type="button">Copy</button><pre><code>db.projects.find({
+  title: {
+    $regex: "^AI",
+    $options: "i"
+  }
+})</code></pre></div>
+
+  <h2>7. Important Points to Remember</h2>
+  <ul>
+    <li>Create a text index before using <code>$text</code>.</li>
+    <li>Use <code>$search</code> to specify search terms.</li>
+    <li>Multiple words in a search string are generally treated as alternatives.</li>
+    <li>Use escaped quotation marks for exact phrase searches.</li>
+    <li>Use <code>-word</code> to exclude a term.</li>
+    <li>A text index supports keyword-based searching, not arbitrary substring matching.</li>
+    <li>MongoDB text search is not the same as a full search engine; advanced relevance tuning and language-specific behavior have their own limitations.</li>
+  </ul>
+
+  <h2>8. Practice Questions</h2>
+  <p>Try these queries using the <code>projects</code> collection:</p>
+  <ol>
+    <li>Find all projects containing the word <code>intelligence</code>.</li>
+    <li>Find projects containing either <code>student</code> or <code>web</code>.</li>
+    <li>Find projects containing the exact phrase <code>disease prediction</code>.</li>
+    <li>Search for <code>artificial</code> while excluding <code>agriculture</code>.</li>
+    <li>Find matching projects and display only the <code>title</code> field.</li>
+  </ol>
+
+  <div class="intro">
+    <strong>Teaching tip:</strong> Run each query in <code>mongosh</code>, inspect the returned documents, and then modify the search words. This makes it easier to understand how the text index and <code>$text</code> operator work together.
+  </div>
+
+  <div class="footer">MongoDB Tutorial Notes · Text Search Basics</div>
+</main>
+<script>
+  document.querySelectorAll(".copy-btn").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const code = button.parentElement.querySelector("code").innerText;
+      try {
+        await navigator.clipboard.writeText(code);
+        const original = button.innerText;
+        button.innerText = "Copied!";
+        setTimeout(() => button.innerText = original, 1200);
+      } catch (error) {
+        button.innerText = "Copy unavailable";
+        setTimeout(() => button.innerText = "Copy", 1200);
+      }
+    });
+  });
+</script>
     </div>
   </section>
 
